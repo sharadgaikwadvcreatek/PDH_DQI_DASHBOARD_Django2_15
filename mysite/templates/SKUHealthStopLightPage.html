@@ -1,0 +1,518 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block vendorstyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/vendors.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/charts/apexcharts.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether-theme-arrows.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/forms/select/select2.min.css' %}">
+{% endblock %} {% block pagestyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/menu/menu-types/vertical-menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/colors/palette-gradient.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/charts/chart-apex.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/forms/pickers/form-flat-pickr.css' %}">
+{% endblock %}
+{% block content %}
+<div class="content-body" id="dashboard-content">
+  <div class=" row match-height">
+    <div class="col">
+      <div class="card shadow-none bg-transparent border-success">
+        <div class="card-body p0">
+          <b class="text-success"><u> GO CRITERIA</u></b><br>
+          <p class="font-small-1">
+            - Connected from SC to Quality to R&D Sys.<br>
+            - Core Traceability Fields > 80% Accurate
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow-none bg-transparent border-yellow-custom">
+        <div class="card-body p0">
+          <b class="text-yellow"><u> CAUTION CRITERIA</u></b><br>
+          <p class="font-small-1">
+            - Connected from SC to Quality
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow-none bg-transparent border-danger">
+        <div class="card-body p0">
+          <b class="text-danger"><u> STOP CRITERIA</u></b><br>
+          <p class="font-small-1">
+            - ERP Material/s not connected to Quality or R&D Systems
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="divider">
+        <div class="divider-text">
+          <a href="https://vcreatekllc.sharepoint.com/:x:/s/hackathon-ProblemStatement-Data/EfMSN2JSz-ZKgHBKLeUWC1MB3CrNV03TvXGbCaqENax25g?e=bP9bYM" target="_blank" >
+            <button type="button" class="btn btn-secondary waves-effect waves-float waves-light">Link to Regional
+              <br>Details Extracts</button>
+          </a>          
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="divider">
+        <div class="divider-text">
+          <a href="https://vcreatekllc.sharepoint.com/:x:/s/hackathon-ProblemStatement-Data/EfMSN2JSz-ZKgHBKLeUWC1MB3CrNV03TvXGbCaqENax25g?e=bP9bYM" target="_blank" >
+            <button type="button" class="btn btn-secondary waves-effect waves-float waves-light">SKU Health <br>Detail
+              Page</button>
+          </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class=" row match-height">
+    {% for value in regionList %}
+    <div class="col">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title">{{value}} SKU > $50K</h4>
+        </div>
+        <div class="card-body">
+          <div class="row mb-1">
+            <div class="col-4">
+              <div class="avatar avatar bg-success avatar-xl">
+                <div class="avatar-content avatar-content-1 avatar-content-round">
+                  GO
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="row">
+                <div class="col-6">
+                  <div class="avatar bg-secondary rounded float-start">
+                    <div class="avatar-content avatar-content-custom">
+                      {{value|getTotal:'GO'}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  {% with percentage=value|getPercentage:'GO' %}
+                  <div
+                    class="avatar {% if percentage > 89 %} bg-success {% elif percentage > 65 and percentage < 89  %} bg-yellow-custom {% elif percentage < 65 and percentage > 0  %}  bg-danger {% endif %} rounded float-start">
+                    <div class="avatar-content avatar-content-custom">
+                      {{percentage}}%
+                    </div>
+                  </div>
+                  {% endwith %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-1">
+            <div class="col-4">
+              <div class="avatar avatar bg-yellow-custom avatar-xl">
+                <div class="avatar-content avatar-content-1 avatar-content-round">
+                  CAUTION
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="row">
+                <div class="col-6">
+                  <div class="avatar bg-secondary rounded float-start">
+                    <div class="avatar-content avatar-content-custom">
+                      {{value|getTotal:'CAUTION'}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="avatar bg-secondary rounded float-start">
+                    <div class="avatar-content avatar-content-custom">
+                      {{value|getPercentage:'CAUTION'}}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <div class="avatar avatar bg-danger avatar-xl">
+                <div class="avatar-content avatar-content-1 avatar-content-round">
+                  STOP
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="row">
+                <div class="col-6">
+                  <div class="avatar bg-secondary rounded float-start">
+                    <div class="avatar-content avatar-content-custom">
+                      {{value|getTotal:'STOP'}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="avatar bg-secondary rounded float-start">
+                    <div class="avatar-content avatar-content-custom">
+                      {{value|getPercentage:'STOP'}}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row match-height" id="table-bordered">
+        <div class="col-12">
+          <div class="card">
+            <div class="">
+              <table class="table table-bordered card-table table-custom-padding">
+                <thead>
+                  <tr>
+                    <th>Franchise</th>
+                    <th>Total Active Product Count</th>
+                    <th>% of Total - 'Go'</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% with franchiseDetail=value|getFranchiseDetail:'GO' %}
+                  {% for key, value in franchiseDetail.items %}
+                  <tr>
+                    <td>{{value.Franchise}}</td>
+                    <td>{{value.Mat_Count}}</td>
+                    <td
+                      class="{% if value.Percentage > 89 %} bg-success text-white {% elif value.Percentage > 65 and value.Percentage < 89  %} bg-yellow-custom {% elif value.Percentage < 65 and value.Percentage > 0  %}  bg-danger text-white {% endif %}">
+                      {{value.Percentage}}%</td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td>Grand Total</td>
+                    <td>{{value|getTotal:'GO'}}</td>
+                    {% with percentage=value|getPercentage:'GO' %}
+                    <td
+                      class="{% if percentage > 89 %} bg-success text-white {% elif percentage > 65 and percentage < 89  %} bg-yellow-custom {% elif percentage < 65 and percentage > 0  %}  bg-danger text-white {% endif %}">
+                      {{percentage}}%</td>
+                    {% endwith %}
+                  </tr>
+                  {% endwith %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="col-md-3 mb-1 float-right bwhite">
+        <!-- <input type="text" id="flat-picker" class="form-control flatpickr-range bwhite"
+          placeholder="YYYY-MM-DD to YYYY-MM-DD" /> -->
+      </div>
+    </div>
+  </div>
+  <div class="row match-height">
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title">% of Essential Health Products = 'GO'</h4>
+        </div>
+        <div class="card-body p-0">
+          <div id="availabilitytrensChart" class="my-2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title">% of Self Care Products = 'GO'</h4>
+        </div>
+        <div class="card-body p-0">
+          <div id="accuracyTrendChart" class="my-2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title">% of Skin Health Products = 'GO'</h4>
+        </div>
+        <div class="card-body p-0">
+          <div id="connectivityTrendChart" class="my-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/ui/jquery.sticky.js' %}"></script>
+<script src="{% static 'vendors/js/forms/select/select2.full.min.js' %}"></script>
+<script src="{% static 'vendors/js/charts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+<script>
+  var $salesStrokeColor2 = '#000000';
+
+  var $chart1Color = '#ae31f7';
+  var $chart2Color = '#3198f7';
+  var $chart3Color = '#df87f2';
+
+  var $strokeColor = '#ebe9f1';
+  var $textMutedColor = '#b9b9c3';
+
+  var $availabilitytrensChart = document.querySelector('#availabilitytrensChart');
+  var availabilitytrensChartOptions;
+
+  availabilitytrensChartOptions = {
+    chart: {
+      height: 240,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      type: 'line',
+      offsetX: -10
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 4
+    },
+    grid: {
+      borderColor: $strokeColor,
+      padding: {
+        top: -20,
+        bottom: 5,
+        left: 20
+      }
+    },
+    legend: {
+      show: false
+    },
+    colors: [$salesStrokeColor2, $chart1Color],
+    markers: {
+      size: 5,
+      hover: {
+        size: 5
+      }
+    },
+    xaxis: {
+      tickAmount: 5,
+      labels: {
+        offsetY: 5,
+        style: {
+          colors: $textMutedColor,
+          fontSize: '0.857rem'
+        }
+      },
+      axisTicks: {
+        show: false
+      },
+      categories: {{ chartSeries | safe }},
+  axisBorder: {
+    show: false
+  },
+  tickPlacement: 'on'
+},
+  yaxis: {
+    tickAmount: 5,
+      labels: {
+      style: {
+        colors: $textMutedColor,
+          fontSize: '0.857rem'
+      },
+      formatter: function (val) {
+        return val > 999 ? (val / 1000).toFixed(1) + 'k' : val;
+      }
+    }
+  },
+  tooltip: {
+    x: { show: false }
+  },
+  series: [
+    {
+      name: 'Essential Health Percentage',
+      data: {{ percentageGOEHChartData | safe }}
+  },
+    {
+      name: 'Essential Health Count',
+      data: {{ countGOEHChartData | safe }}
+  },
+  ]
+};
+  availabilitytrensChart = new ApexCharts($availabilitytrensChart, availabilitytrensChartOptions);
+  availabilitytrensChart.render();
+
+  //=============================
+  var $accuracyTrendChart = document.querySelector('#accuracyTrendChart');
+  var accuracyTrendChartOptions;
+
+  accuracyTrendChartOptions = {
+    chart: {
+      height: 240,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      type: 'line',
+      offsetX: -10
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 4
+    },
+    grid: {
+      borderColor: $strokeColor,
+      padding: {
+        top: -20,
+        bottom: 5,
+        left: 20
+      }
+    },
+    legend: {
+      show: false
+    },
+    colors: [$salesStrokeColor2, $chart2Color],
+    markers: {
+      size: 5,
+      hover: {
+        size: 5
+      }
+    },
+    xaxis: {
+      tickAmount: 5,
+      labels: {
+        offsetY: 5,
+        style: {
+          colors: $textMutedColor,
+          fontSize: '0.857rem'
+        }
+      },
+      axisTicks: {
+        show: false
+      },
+      categories: {{ chartSeries | safe }},
+  axisBorder: {
+    show: false
+  },
+  tickPlacement: 'on'
+},
+  yaxis: {
+    tickAmount: 5,
+      labels: {
+      style: {
+        colors: $textMutedColor,
+          fontSize: '0.857rem'
+      },
+      formatter: function (val) {
+        return val > 999 ? (val / 1000).toFixed(1) + 'k' : val;
+      }
+    }
+  },
+  tooltip: {
+    x: { show: false }
+  },
+  series: [
+    {
+      name: 'Self Care Percentage',
+      data: {{ percentageGOSCChartData | safe }}
+  },
+    {
+      name: 'Self Care Count',
+      data: {{ countGOSCChartData | safe }}
+  },
+  ]
+};
+  accuracyTrendChart = new ApexCharts($accuracyTrendChart, accuracyTrendChartOptions);
+  accuracyTrendChart.render();
+
+  //=============================
+  var $connectivityTrendChart = document.querySelector('#connectivityTrendChart');
+  var connectivityTrendChartOptions;
+
+  connectivityTrendChartOptions = {
+      chart: {
+        height: 240,
+        toolbar: { show: false },
+        zoom: { enabled: false },
+        type: 'line',
+        offsetX: -10
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 4
+      },
+      grid: {
+        borderColor: $strokeColor,
+        padding: {
+          top: -20,
+          bottom: 5,
+          left: 20
+        }
+      },
+      legend: {
+        show: false
+      },
+      colors: [$salesStrokeColor2, $chart3Color],
+      markers: {
+        size: 5,
+        hover: {
+          size: 5
+        }
+      },
+      xaxis: {
+        tickAmount: 5,
+        labels: {
+          offsetY: 5,
+          style: {
+            colors: $textMutedColor,
+            fontSize: '0.857rem'
+          }
+        },
+        axisTicks: {
+          show: false
+        },
+        categories: {{ chartSeries | safe }},
+    axisBorder: {
+      show: false
+    },
+    tickPlacement: 'on'
+    },
+    yaxis: {
+      tickAmount: 5,
+        labels: {
+        style: {
+          colors: $textMutedColor,
+            fontSize: '0.857rem'
+        },
+        formatter: function (val) {
+          return val > 999 ? (val / 1000).toFixed(1) + 'k' : val;
+        }
+      }
+    },
+    tooltip: {
+      x: { show: false }
+    },
+    series: [
+      {
+        name: 'Essential Health Percentage',
+        data: {{ percentageGOSHChartData | safe }}
+      },
+      {
+        name: 'Essential Health Count',
+        data: {{ countGOSHChartData | safe }}
+      },
+    ]
+}; 
+  connectivityTrendChart = new ApexCharts($connectivityTrendChart, connectivityTrendChartOptions);
+  connectivityTrendChart.render();
+
+</script>
+{% endblock %}
+
+{% block pagevendorscript %}
+
+{% endblock %}
+
+{% block pagescript %}
+<script src="{% static 'js/scripts/charts/chart-apex.js' %}"></script>
+<script src="{% static 'js/scripts/components/components-tooltips.min.js' %}"></script>
+<script src="{% static 'js/scripts/forms/form-select2.js' %}"></script>
+{% endblock %}

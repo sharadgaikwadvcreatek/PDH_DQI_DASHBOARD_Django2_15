@@ -1,0 +1,9 @@
+django-crispy-forms
+django-axes
+django-background-tasks
+icalendar
+mysqlclient
+pandas
+simplejson
+Django==2.1.15
+openpyxl

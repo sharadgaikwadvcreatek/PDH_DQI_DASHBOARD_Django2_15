@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block vendorstyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/vendors.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/toastr.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/tables/datatable/datatables.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/animate/animate.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/sweetalert2.min.css' %}">
+{% endblock %}
+
+{% block pagestyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/menu/menu-types/vertical-menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css-rtl/pages/page-knowledge-base.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/colors/palette-gradient.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/extensions/toastr.css' %}">
+{% endblock %}
+
+{% block content %}
+  
+    <div class="content-body">
+        <section id="knowledge-base-search">
+            <div class="row">
+              <div class="col-12">
+                <div
+                  class="card knowledge-base-bg text-center"
+                  style="background-image: url({% static 'images/banner/banner.png' %})"
+                >
+                  <div class="card-body">
+                    <h2 class="text-primary">PDH DQI DASHBOARD</h2>
+                    <p class="card-text mb-2">
+                      <span>Dashboard to represent Foundational Data Quality, Data Stewardship and Governance</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="knowledge-base-content">
+            <div class="row kb-search-content-info match-height">
+              <!-- SKUHealthStopLight -->
+              <div class="col kb-search-content">
+                <div class="card">
+                  <a href="{% url 'SKUHealthStopLight' %}">
+                    <img
+                      src="{% static 'images/dashboard/dashboard8.jpg' %}"
+                      class="card-img-top"
+                      alt="knowledge-base-image"
+                      height="200"
+                    />
+          
+                    <div class="card-body text-center">
+                      <h4>DQI Landing Page (Executive)</h4>
+                      <p class="text-body mt-1 mb-0">
+                        Regional indicator for overall data quality, accuracy, avalibility and connectivity along with Trends
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+
+               <!-- DQIRegionalSnapshot -->
+               <div class="col kb-search-content">
+                <div class="card">
+                  <a href="{% url 'DQIRegionalSnapshot' %}">
+                    <img src="{% static 'images/dashboard/dashboard4.jpg' %}" class="card-img-top" alt="knowledge-base-image"
+                    height="200" /'}>
+                    <div class="card-body text-center">
+                      <h4>DQI Regional Snapshot</h4>
+                      <p class="text-body mt-1 mb-0">Franchise wise active product count with and GO Count, along with historical trend data of total and active field tested, also gives top and bottom author list</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+          
+              <!-- SKUHealthLandingPageExecutive -->
+              <div class="col kb-search-content">
+                <div class="card">
+                  <a href="{% url 'SKUHealthLandingPageExecutive' %}">
+                    <img
+                      src="{% static 'images/dashboard/dashboard3.jpg' %}"
+                      class="card-img-top"
+                      alt="knowledge-base-image"
+                      height="200"
+                    />
+                    <div class="card-body text-center">
+                      <h4>SKU Health Landing Page (Executive)</h4>
+                      <p class="text-body mt-1 mb-0">Franchise and region wise gauge or speedometer chart to represent data quality %
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+          
+             
+          
+              <!-- SKUHealthStopLightPage -->
+              <div class="col kb-search-content">
+                <div class="card">
+                  <a href="{% url 'SKUHealthStopLightPage' %}">
+                    <img
+                      src="{% static 'images/dashboard/dashboard6.jpg' %}"
+                      class="card-img-top"
+                      alt="knowledge-base-image"
+                      height="200"
+                    />
+                    <div class="card-body text-center">
+                      <h4>SKU Health Stop Light Page</h4>
+                      <p class="text-body mt-1 mb-0">Franchise and region wise total ERP count and their % of GO, also represent historical total material count and their GO%</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+          
+              <!-- email -->
+              <div class="col kb-search-content">
+                <div class="card">
+                  <a href="{% url 'productLevelRFTDashboard' %}">
+                    <img
+                      src="{% static 'images/dashboard/dashboard7.jpg' %}"
+                      class="card-img-top"
+                      alt="knowledge-base-image"
+                      height="200"
+                    />
+                    <div class="card-body text-center">
+                      <h4>Product Level RFT Dashboard</h4>
+                      <p class="text-body mt-1 mb-0">Count of ERP Codes by First Sales Month & % Clean & Connected, Count Breakdown of SKU Health for Known Business Process Gaps also represent Top and Bottom Brands</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+          
+              <!-- no result -->
+              <div class="col-12 text-center no-result no-items">
+                <h4 class="mt-4">Search result not found!!</h4>
+              </div>
+            </div>
+          </section>
+    </div>
+   
+    <!-- Column selectors with Export Options and print table -->
+
+    <script src="{% static 'vendors/js/extensions/toastr.min.js' %}"></script>
+       
+    {% if messages %}
+        {% for message in messages %}            
+            {% if message.tags == 'success'%}
+              <script type="text/javascript">
+                toastr.success("{{message}}")
+              </script>
+            {% elif message.tags == 'info' %}
+              <script type="text/javascript">
+                toastr.info("{{message}}")
+              </script>
+            {% elif message.tags == 'warning' %}
+              <script type="text/javascript">
+                toastr.warning("{{message}}")
+              </script>
+            {% elif message.tags == 'error' %}
+                <script type="text/javascript">
+                toastr.error("{{message}}")
+              </script>
+            {% endif %}          
+        {% endfor %}
+    {% endif %}
+    
+{% endblock %}
+{% block vendorscript %}
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>    
+{% endblock %}
+
+{% block pagevendorscript %}
+
+<script src="{% static 'vendors/js/extensions/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/pdfmake.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/vfs_fonts.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/datatables.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/datatables.buttons.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/buttons.html5.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/buttons.print.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/buttons.bootstrap.min.js' %}"></script>
+<script src="{% static 'vendors/js/tables/datatable/datatables.bootstrap4.min.js' %}"></script>
+{% endblock %}
+
+{% block pagescript %}
+<script src="{% static 'js/scripts/pages/page-knowledge-base.min.js' %}"></script>
+{% endblock %}

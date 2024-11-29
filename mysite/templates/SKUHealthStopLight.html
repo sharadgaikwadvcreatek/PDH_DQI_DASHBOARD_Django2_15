@@ -1,0 +1,896 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block vendorstyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/vendors.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/charts/apexcharts.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether-theme-arrows.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/forms/select/select2.min.css' %}">
+{% endblock %} {% block pagestyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/menu/menu-types/vertical-menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/colors/palette-gradient.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/charts/chart-apex.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/forms/pickers/form-flat-pickr.css' %}">
+{% endblock %} {% block content %}
+<div class="content-header row">
+  <div class="content-header-left col-md-12 col-12 mb-1">
+      <div class="row breadcrumbs-top">
+          <div class="col-12">
+              <div class="col-md-2 mb-1 float-right">
+                <select class="select2 form-select" id="select2-basic1">
+                  {% for value in runDateFilterData %} 
+                  <option value="{{value | changeDateFormat}}">{{value | changeDateFormat}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="content-body" id="dashboard-content">
+  <div class="row match-height">
+    {% csrf_token %}
+    {% for key, value in data.items %} 
+    <div class="col">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title">{{value.Region}}</h4>
+          <input type="hidden" class="{{value.Region |lower}}" id="{{value.Region |lower}}" value="{{value.DQI_Regional | calculate_percentage}}" />
+          <i data-feather="arrow-right" class="font-medium-3 text-muted cursor-pointer" ></i>
+        </div>
+        <div class="card-body p-0">
+          <div id="{{value.Region |lower}}Chart" class="my-2"></div>
+          <div class="row border-top text-center mx-0">
+            <div class="col-7 border-end py-1">
+              <p class="card-text mb-1" data-bs-toggle="tooltip" data-bs-placement="top"
+              title="Connectivity">Connectivity</p>
+              <p class="card-text mb-1" data-bs-toggle="tooltip" data-bs-placement="top"
+              title="Accuracy">Accuracy</p>
+              <p class="card-text mb-1" data-bs-toggle="tooltip" data-bs-placement="top"
+              title="Availability">Availability</p>
+            </div>
+            <div class="col-5 border-end py-1">              
+              <h5 class="fw-bolder mb-1" data-bs-toggle="tooltip" data-bs-placement="top"
+              title="Connectivity"><span class="badge badge-glow bg-success {{value.Region}}_Connectivity">{{value.Connectivity | calculate_percentage}}%</span></h5>
+              <h5 class="fw-bolder mb-1" data-bs-toggle="tooltip" data-bs-placement="top"
+              title="Accuracy"><span class="badge badge-glow bg-success {{value.Region}}_Accuracy">{{value.Accuracy | calculate_percentage}}%</span></h5>
+              <h5 class="fw-bolder mb-0" data-bs-toggle="tooltip" data-bs-placement="top"
+              title="Availability"><span class="badge badge-glow bg-success {{value.Region}}_Availability">{{value.Availability | calculate_percentage}}%</span></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="col-md-3 mb-1 float-right mr-1">
+        <select class="select2 form-select" id="select2-basic">
+          <option value="GLOBAL">GLOBAL</option>
+            <option value="NA">NA</option>
+            <option value="APAC">APAC</option>
+            <option value="EMEA">EMEA</option>
+            <option value="LATAM">LATAM</option>
+        </select>
+      </div>
+    </div>  
+  </div>
+  <div class="row match-height">
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title avilabilityTrend">Global Availability Trend</h4>
+        </div>
+        <div class="card-body p-0">
+          <div id="availabilitytrensChart" class="my-2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title accuracytrend">Global Accuracy Trend</h4>
+        </div>
+        <div class="card-body p-0">
+          <div id="accuracyTrendChart" class="my-2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title connectivityTrend">Global Connectivity Trend</h4>
+        </div>
+        <div class="card-body p-0">
+          <div id="connectivityTrendChart" class="my-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/ui/jquery.sticky.js' %}"></script>
+<script src="{% static 'vendors/js/forms/select/select2.full.min.js' %}"></script>
+<script src="{% static 'vendors/js/charts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+
+<!-- candidate_channel_donutChart.updateSeries(response.c_channel_chart_series_data); -->
+
+<script>
+  $(window).on('load', function () {
+
+    var $goalStrokeColor2 = '#51e5a8';
+    var $strokeColor = '#ebe9f1';
+    var $textHeadingColor = '#5e5873';
+
+    var globalChart1 = document.querySelector('#globalChart');
+    var globalChartOptions;
+
+    var globalValue = $('#global').val();
+
+    globalChartOptions = {
+      chart: {
+        height: 200,
+        type: 'radialBar',
+        sparkline: {
+          enabled: true
+        },
+        dropShadow: {
+          enabled: true,
+          blur: 3,
+          left: 1,
+          top: 1,
+          opacity: 0.1
+        }
+      },
+      colors: [$goalStrokeColor2],
+      plotOptions: {
+        radialBar: {
+          offsetY: -10,
+          startAngle: -150,
+          endAngle: 150,
+          hollow: {
+            size: '77%'
+          },
+          track: {
+            background: $strokeColor,
+            strokeWidth: '90%'
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              color: $textHeadingColor,
+              fontSize: '2.86rem',
+              fontWeight: '300'
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'horizontal',
+          shadeIntensity: 0.5,
+          gradientToColors: [window.colors.solid.success],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100]
+        }
+      },
+      series: [globalValue],
+      stroke: {
+        lineCap: 'round'
+      },
+      grid: {
+        padding: {
+          bottom: 10
+        }
+      }
+    };
+
+    globalChart = new ApexCharts(globalChart1, globalChartOptions);
+    globalChart.render();
+
+    //=========================================
+    var $naChart = document.querySelector('#naChart');
+    var naChartOptions;
+
+    var naValue = $('#na').val();
+
+    naChartOptions = {
+      chart: {
+        height: 200,
+        type: 'radialBar',
+        sparkline: {
+          enabled: true
+        },
+        dropShadow: {
+          enabled: true,
+          blur: 3,
+          left: 1,
+          top: 1,
+          opacity: 0.1
+        }
+      },
+      colors: [$goalStrokeColor2],
+      plotOptions: {
+        radialBar: {
+          offsetY: -10,
+          startAngle: -150,
+          endAngle: 150,
+          hollow: {
+            size: '77%'
+          },
+          track: {
+            background: $strokeColor,
+            strokeWidth: '90%'
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              color: $textHeadingColor,
+              fontSize: '2.86rem',
+              fontWeight: '300'
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'horizontal',
+          shadeIntensity: 0.5,
+          gradientToColors: [window.colors.solid.success],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100]
+        }
+      },
+      series: [naValue],
+      stroke: {
+        lineCap: 'round'
+      },
+      grid: {
+        padding: {
+          bottom: 10
+        }
+      }
+    };
+
+    naChart = new ApexCharts($naChart, naChartOptions);
+    naChart.render();
+
+    //=========================================
+
+    var $apacChart = document.querySelector('#apacChart');
+    var apacChartOptions;
+
+    var apacValue = $('#apac').val();
+
+    apacChartOptions = {
+      chart: {
+        height: 200,
+        type: 'radialBar',
+        sparkline: {
+          enabled: true
+        },
+        dropShadow: {
+          enabled: true,
+          blur: 3,
+          left: 1,
+          top: 1,
+          opacity: 0.1
+        }
+      },
+      colors: [$goalStrokeColor2],
+      plotOptions: {
+        radialBar: {
+          offsetY: -10,
+          startAngle: -150,
+          endAngle: 150,
+          hollow: {
+            size: '77%'
+          },
+          track: {
+            background: $strokeColor,
+            strokeWidth: '90%'
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              color: $textHeadingColor,
+              fontSize: '2.86rem',
+              fontWeight: '300'
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'horizontal',
+          shadeIntensity: 0.5,
+          gradientToColors: [window.colors.solid.success],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100]
+        }
+      },
+      series: [apacValue],
+      stroke: {
+        lineCap: 'round'
+      },
+      grid: {
+        padding: {
+          bottom: 10
+        }
+      }
+    };
+
+    apacChart = new ApexCharts($apacChart, apacChartOptions);
+    apacChart.render();
+
+    //=========================================
+
+    var $emeaChart = document.querySelector('#emeaChart');
+    var emeaChartOptions;
+
+    var emeaValue = $('#emea').val();
+
+    emeaChartOptions = {
+      chart: {
+        height: 200,
+        type: 'radialBar',
+        sparkline: {
+          enabled: true
+        },
+        dropShadow: {
+          enabled: true,
+          blur: 3,
+          left: 1,
+          top: 1,
+          opacity: 0.1
+        }
+      },
+      colors: [$goalStrokeColor2],
+      plotOptions: {
+        radialBar: {
+          offsetY: -10,
+          startAngle: -150,
+          endAngle: 150,
+          hollow: {
+            size: '77%'
+          },
+          track: {
+            background: $strokeColor,
+            strokeWidth: '90%'
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              color: $textHeadingColor,
+              fontSize: '2.86rem',
+              fontWeight: '300'
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'horizontal',
+          shadeIntensity: 0.5,
+          gradientToColors: [window.colors.solid.success],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100]
+        }
+      },
+      series: [emeaValue],
+      stroke: {
+        lineCap: 'round'
+      },
+      grid: {
+        padding: {
+          bottom: 10
+        }
+      }
+    };
+
+    emeaChart = new ApexCharts($emeaChart, emeaChartOptions);
+    emeaChart.render();
+
+
+    //=========================================
+
+    var $latamChart = document.querySelector('#latamChart');
+    var latamChartOptions;
+
+    var latamValue = $('#latam').val();
+
+    latamChartOptions = {
+      chart: {
+        height: 200,
+        type: 'radialBar',
+        sparkline: {
+          enabled: true
+        },
+        dropShadow: {
+          enabled: true,
+          blur: 3,
+          left: 1,
+          top: 1,
+          opacity: 0.1
+        }
+      },
+      colors: [$goalStrokeColor2],
+      plotOptions: {
+        radialBar: {
+          offsetY: -10,
+          startAngle: -150,
+          endAngle: 150,
+          hollow: {
+            size: '77%'
+          },
+          track: {
+            background: $strokeColor,
+            strokeWidth: '90%'
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              color: $textHeadingColor,
+              fontSize: '2.86rem',
+              fontWeight: '300'
+            }
+          }
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'horizontal',
+          shadeIntensity: 0.5,
+          gradientToColors: [window.colors.solid.success],
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 100]
+        }
+      },
+      series: [latamValue],
+      stroke: {
+        lineCap: 'round'
+      },
+      grid: {
+        padding: {
+          bottom: 10
+        }
+      }
+    };
+
+    latamChart = new ApexCharts($latamChart, latamChartOptions);
+    latamChart.render();
+
+    //===================================
+    
+    var $salesStrokeColor2 = '#000000';
+
+    var $chart1Color = '#ae31f7';
+    var $chart2Color = '#3198f7';
+    var $chart3Color = '#df87f2';
+
+    var $strokeColor = '#ebe9f1';
+    var $textMutedColor = '#b9b9c3';
+
+    var $availabilitytrensChart = document.querySelector('#availabilitytrensChart');
+    var availabilitytrensChartOptions;
+
+    availabilitytrensChartOptions = {
+    chart: {
+      height: 340,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      type: 'line',
+      offsetX: -10
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 4
+    },
+    grid: {
+      borderColor: $strokeColor,
+      padding: {
+        top: -20,
+        bottom: 5,
+        left: 20
+      }
+    },
+    legend: {
+      show: true
+    },
+    colors: [$salesStrokeColor2, $chart1Color],
+    // fill: {
+    //   type: 'gradient',
+    //   gradient: {
+    //     shade: 'dark',
+    //     inverseColors: false,
+    //     gradientToColors: [window.colors.solid.primary],
+    //     shadeIntensity: 1,
+    //     type: 'horizontal',
+    //     opacityFrom: 1,
+    //     opacityTo: 1,
+    //     stops: [0, 100, 100, 100]
+    //   }
+    // },
+    markers: {
+      size: 5,
+      hover: {
+        size: 5
+      }
+    },
+    xaxis: {
+      tickAmount: 5,
+      labels: {
+        offsetY: 5,
+        style: {
+          colors: $textMutedColor,
+          fontSize: '0.857rem'
+        }
+      },
+      axisTicks: {
+        show: false
+      },
+      categories: {{ chartSeries | safe }},
+      axisBorder: {
+        show: false
+      },
+      tickPlacement: 'on'
+    },
+    yaxis: {
+      tickAmount: 5,
+      labels: {
+        style: {
+          colors: $textMutedColor,
+          fontSize: '0.857rem'
+        },
+        formatter: function (val) {
+          return val > 999 ? (val / 1000).toFixed(1) + 'k' : val;
+        }
+      }
+    },
+    tooltip: {
+      x: { show: false }
+    },
+    series: [
+      {
+        name: 'DQI Trend',
+        data: {{ DQISeriesData | safe }},
+      },
+      {
+        name: 'Global Availability Trend',
+        data: {{ AvailabilityChartData | safe }},
+      },
+    ]
+  };
+    availabilitytrensChart = new ApexCharts($availabilitytrensChart, availabilitytrensChartOptions);
+    availabilitytrensChart.render();
+
+    //=============================
+    var $accuracyTrendChart = document.querySelector('#accuracyTrendChart');
+    var accuracyTrendChartOptions;
+
+    accuracyTrendChartOptions = {
+      chart: {
+        height: 340,
+        toolbar: { show: false },
+        zoom: { enabled: false },
+        type: 'line',
+        offsetX: -10
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 4
+      },
+      grid: {
+        borderColor: $strokeColor,
+        padding: {
+          top: -20,
+          bottom: 5,
+          left: 20
+        }
+      },
+      legend: {
+        show: true
+      },
+      colors: [$salesStrokeColor2, $chart2Color],
+      // fill: {
+      //   type: 'gradient',
+      //   gradient: {
+      //     shade: 'dark',
+      //     inverseColors: false,
+      //     gradientToColors: [window.colors.solid.primary],
+      //     shadeIntensity: 1,
+      //     type: 'horizontal',
+      //     opacityFrom: 1,
+      //     opacityTo: 1,
+      //     stops: [0, 100, 100, 100]
+      //   }
+      // },
+      markers: {
+        size: 5,
+        hover: {
+          size: 5
+        }
+      },
+      xaxis: {
+        tickAmount: 5,
+        labels: {
+          offsetY: 5,
+          style: {
+            colors: $textMutedColor,
+            fontSize: '0.857rem'
+          }
+        },
+        axisTicks: {
+          show: false
+        },
+        categories: {{ chartSeries | safe }},
+        axisBorder: {
+          show: false
+        },
+        tickPlacement: 'on'
+      },
+      yaxis: {
+        tickAmount: 5,
+        labels: {
+          style: {
+            colors: $textMutedColor,
+            fontSize: '0.857rem'
+          },
+          formatter: function (val) {
+            return val > 999 ? (val / 1000).toFixed(1) + 'k' : val;
+          }
+        }
+      },
+      tooltip: {
+        x: { show: false }
+      },
+      series: [
+        {
+          name: 'DQI Trend',
+          data: {{ DQISeriesData | safe }}
+        },
+        {
+          name: 'Global Accuracy Trend',
+          data: {{ accuracyChartData | safe }}
+        }
+      ]
+    };
+    accuracyTrendChart = new ApexCharts($accuracyTrendChart, accuracyTrendChartOptions);
+    accuracyTrendChart.render();
+
+    //=============================
+    var $connectivityTrendChart = document.querySelector('#connectivityTrendChart');
+    var connectivityTrendChartOptions;
+
+    connectivityTrendChartOptions = {
+    chart: {
+      height: 340,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      type: 'line',
+      offsetX: -10
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 4
+    },
+    grid: {
+      borderColor: $strokeColor,
+      padding: {
+        top: -20,
+        bottom: 5,
+        left: 20
+      }
+    },
+    legend: {
+      show: true
+    },
+    colors: [$salesStrokeColor2, $chart3Color],
+    // fill: {
+    //   type: 'gradient',
+    //   gradient: {
+    //     shade: 'dark',
+    //     inverseColors: false,
+    //     gradientToColors: [window.colors.solid.primary],
+    //     shadeIntensity: 1,
+    //     type: 'horizontal',
+    //     opacityFrom: 1,
+    //     opacityTo: 1,
+    //     stops: [0, 100, 100, 100]
+    //   }
+    // },
+    markers: {
+      size: 5,
+      hover: {
+        size: 5
+      }
+    },
+    xaxis: {
+      tickAmount: 5,
+      labels: {
+        offsetY: 5,
+        style: {
+          colors: $textMutedColor,
+          fontSize: '0.857rem'
+        }
+      },
+      axisTicks: {
+        show: false
+      },
+      categories: {{ chartSeries | safe }},
+      axisBorder: {
+        show: false
+      },
+      tickPlacement: 'on'
+    },
+    yaxis: {
+      tickAmount: 5,
+      labels: {
+        style: {
+          colors: $textMutedColor,
+          fontSize: '0.857rem'
+        },
+        formatter: function (val) {
+          return val > 999 ? (val / 1000).toFixed(1) + 'k' : val;
+        }
+      }
+    },
+    tooltip: {
+      x: { show: false }
+    },
+    series: [
+      {
+        name: 'DQI Trend',
+        data: {{ DQISeriesData | safe }}
+      },
+      {
+        name: 'Global Connectivity Trend',
+        data: {{ connectivityChartData | safe }}
+      }
+    ]
+  };
+    connectivityTrendChart = new ApexCharts($connectivityTrendChart, connectivityTrendChartOptions);
+    connectivityTrendChart.render();
+
+  });
+
+  var flatPicker = $('#flat-picker');
+  if (flatPicker.length) {
+    var date = new Date();
+    flatPicker.each(function () {
+      $(this).flatpickr({
+        mode: 'range',
+        defaultDate: ['2023-05-12', '2023-05-17']
+      });
+    });
+  }
+
+  $('#select2-basic1').on('change', function() {
+    var option = $("#select2-basic1 option:selected").text();
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    $.ajax({
+        url: "/SKUHealthStopLight/",
+        type: "post",
+        data: {'runDate':option, 'csrfmiddlewaretoken':csrftoken},
+        success: function(response) 
+        {
+          for (const [key, value] of Object.entries(response.data)) {
+            if(value.Region == 'LATAM'){
+              latamChart.updateSeries([(value.DQI_Regional * 100).toFixed(2)]);
+            }
+            if(value.Region == 'GLOBAL'){
+              globalChart.updateSeries([(value.DQI_Regional * 100).toFixed(2)]);
+            }
+            if(value.Region == 'NA'){
+              naChart.updateSeries([(value.DQI_Regional * 100).toFixed(2)]);
+            }
+            if(value.Region == 'APAC'){
+              apacChart.updateSeries([(value.DQI_Regional * 100).toFixed(2)]);
+            }
+            if(value.Region == 'EMEA'){
+              emeaChart.updateSeries([(value.DQI_Regional * 100).toFixed(2)]);
+            }
+
+            $('.'+value.Region+'_Connectivity').html((value.Connectivity * 100).toFixed(2)+"%");
+            $('.'+value.Region+'_Accuracy').html((value.Accuracy * 100).toFixed(2)+"%");
+            $('.'+value.Region+'_Availability').html((value.Availability * 100).toFixed(2)+"%");
+          }
+        }
+    }); 
+  })
+
+  $('#select2-basic').on('change', function() {
+    var option = $("#select2-basic option:selected").text();
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    $.ajax({
+        url: "/SKUHealthStopLight/",
+        type: "post",
+        data: {'region':option, 'csrfmiddlewaretoken':csrftoken},
+        success: function(response) 
+        {
+          $('.avilabilityTrend').html(option +' Availability Trend');
+          $('.accuracytrend').html(option +' Accuracy Trend');
+          $('.connectivityTrend').html(option +' Connectivity Trend');
+
+          availabilitytrensChart.updateSeries([{
+            name: 'DQI Trend',
+            data: response.DQISeriesData
+          },
+          {
+            name: option +' Availability Trend',
+            data: response.AvailabilityChartData
+          }]);
+
+          accuracyTrendChart.updateSeries([{
+            name: 'DQI Trend',
+            data: response.DQISeriesData
+          },
+          {
+            name: option +' Accuracy Trend',
+            data: response.accuracyChartData
+          }]);
+
+          connectivityTrendChart.updateSeries([{
+            name: 'DQI Trend',
+            data: response.DQISeriesData
+          },
+          {
+            name: option +' Connectivity Trend',
+            data: response.connectivityChartData
+          }]);
+        }
+    }); 
+  })
+
+</script>
+{% endblock %}
+
+{% block vendorscript %}
+
+{% endblock %}
+
+{% block pagevendorscript %}
+
+{% endblock %}
+
+{% block pagescript %}
+<script src="{% static 'js/scripts/charts/chart-apex.js' %}"></script>
+<script src="{% static 'js/scripts/components/components-tooltips.min.js' %}"></script>
+<script src="{% static 'js/scripts/forms/form-select2.js' %}"></script>
+{% endblock %}

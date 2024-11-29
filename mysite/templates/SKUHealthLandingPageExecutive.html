@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block vendorstyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/vendors.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/charts/apexcharts.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether-theme-arrows.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/forms/select/select2.min.css' %}">
+{% endblock %} {% block pagestyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/menu/menu-types/vertical-menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/colors/palette-gradient.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/charts/chart-apex.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/forms/pickers/form-flat-pickr.css' %}">
+{% endblock %} 
+{% block content %}
+<div class="content-header row">
+    <div class="content-header-left col-md-12 col-12 mb-2">
+        <div class="row breadcrumbs-top">
+            <div class="col-12">
+                <div class="col-md-2 float-right">
+                <select class="select2 form-select" id="select2-basic1">
+                  <option value="GO">GO</option>
+                  <option value="CAUTION">CAUTION</option>
+                  <option value="STOP">STOP</option>
+                </select>
+              </div>
+            </div>
+        </div>
+    </div>        
+</div>
+<div class="content-body" id="dashboard-content">
+    {% csrf_token %}
+    <div class="row match-height">
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card earnings-card">
+                <div class="card-body addHere">
+                    <div class="container4">
+                        <div class="avatar avatar bg-success avatar-xl">
+                            <div class="avatar-content avatar-content-round">
+                                GO
+                            </div>
+                        </div>
+                    </div>     
+                </div>                    
+            </div> 
+        </div>
+        {% for value in regionList %}
+            {% with data=value|getTotalAndPercentage:'GO' %}
+                <div class="col-lg-2 col-md-6 col-12">
+                    <div class="card earnings-card">
+                        <div class="card-header region_avtar">
+                            {{value}}
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="avatar bg-success rounded float-start">
+                                        <div class="avatar-content avatar-content-custom {{value}}_percentage_of_total">
+                                            {{data.percentage_of_total}}%
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-7">
+                                    <h2 class="{{value}}_grand_total">{{data.grand_total}}</h2>
+                                    <div class="font-small-2">of</div>
+                                    <h2 class="{{value}}_total">{{data.total}}</h2>
+                                    
+                                </div>
+                                <div class="font-small-2">ERP Material > $50K NTS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+    <div class="row match-height">
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card">
+              <div class="card-body p-0">
+                <div class=container4>
+                    <h4>Self Care</h4>                    
+                  </div>
+              </div>
+            </div>
+        </div>
+        {% for key, value in self_care_data.items %}
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card earnings-card">
+                <!-- <div class="card-body">
+                    <div class="font-small-3">Target Value : </div>
+                </div> -->
+                <div id="selfCare_{{value.Region}}" class="my-2"></div> 
+            </div>            
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row match-height">
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card">
+              <div class="card-body p-0">
+                <div class=container4>
+                    <h4>Skin Health</h4>
+                  </div>
+              </div>
+            </div>
+        </div>
+        {% for key, value in skin_health_data.items %}
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card earnings-card">
+                <div id="skinHealth_{{value.Region}}" class="my-2"></div> 
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row match-height">
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card">
+              <div class="card-body p-0">
+                <div class=container4>
+                    <h4>Essential Health</h4>
+                  </div>
+              </div>
+            </div>
+        </div>
+        {% for key, value in essential_health_data.items %}
+        <div class="col-lg-2 col-md-6 col-12">
+            <div class="card earnings-card">
+                <div id="essentialHelth_{{value.Region}}" class="my-2"></div> 
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <span class="fr badge badge-glow bg-success">=> 90%</span>
+            <span class="fr badge badge-glow bg-yellow-custom">65% - 89%</span>
+            <span class="fr badge badge-glow bg-red-custom">< 65%</span>
+        </div>        
+    </div>    
+</div>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/ui/jquery.sticky.js' %}"></script>
+<script src="{% static 'vendors/js/forms/select/select2.full.min.js' %}"></script>
+<script src="{% static 'vendors/js/charts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+<!-- <div id="chart" class="my-2"></div> -->
+<script>
+
+    var self_care_data = {{self_care_data | safe }};
+    var selfCare = [];
+    for (const [key, value] of Object.entries(self_care_data)) {
+        if(value.Percentage > 0 && value.Percentage <= 65) {
+            var $color = '#f70505';
+        }
+        else if(value.Percentage > 65 && value.Percentage <= 89){ 
+            var $color = '#fff642';
+        } else if(value.Percentage > 89){ 
+            var $color = '#28c76f';
+        }
+
+        var options = {
+            height: 200,
+            series: [(value.Percentage).toFixed(2)],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            colors: [$color],
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#ebe9f1",
+                        strokeWidth: '97%',
+                        margin: 3, // margin is in pixels
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '20px'
+                        }
+                    }
+                }
+            },
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
+
+        selfCare["selfCare_"+value.Region] = new ApexCharts(document.querySelector("#selfCare_"+value.Region), options);
+        selfCare["selfCare_"+value.Region].render();
+    }
+   
+    //=============================== Skin Helth ================================
+
+    var skin_health_data = {{skin_health_data | safe }};
+    var skinHealth = [];
+    for (const [key, value] of Object.entries(skin_health_data)) {
+        if(value.Percentage > 0 && value.Percentage <= 65) {
+            var $color = '#f70505';
+        }
+        else if(value.Percentage > 65 && value.Percentage <= 89){ 
+            var $color = '#fff642';
+        } else if(value.Percentage > 89){ 
+            var $color = '#28c76f';
+        }
+
+        var options = {
+            height: 200,
+            series: [(value.Percentage).toFixed(2)],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            colors: [$color],
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#ebe9f1",
+                        strokeWidth: '97%',
+                        margin: 3, // margin is in pixels
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '20px'
+                        }
+                    }
+                }
+            },
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
+
+        skinHealth["skinHealth_"+value.Region] = new ApexCharts(document.querySelector("#skinHealth_"+value.Region), options);
+        skinHealth["skinHealth_"+value.Region].render();
+    }
+    //=============================== Essential Helth ================================
+
+    var essential_health_data = {{essential_health_data | safe }};
+
+    var essentialHelth = [];
+    for (const [key, value] of Object.entries(essential_health_data)) {
+        if(value.Percentage > 0 && value.Percentage <= 65) {
+            var $color = '#f70505';
+        }
+        else if(value.Percentage > 65 && value.Percentage <= 89){ 
+            var $color = '#fff642';
+        } else if(value.Percentage > 89){ 
+            var $color = '#28c76f';
+        }
+
+        var options = {
+            height: 200,
+            series: [(value.Percentage).toFixed(2)],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            colors: [$color],
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#ebe9f1",
+                        strokeWidth: '97%',
+                        margin: 3, // margin is in pixels
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '20px'
+                        }
+                    }
+                }
+            },
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
+
+        essentialHelth["essentialHelth_"+value.Region] = new ApexCharts(document.querySelector("#essentialHelth_"+value.Region), options);
+        essentialHelth["essentialHelth_"+value.Region].render();
+    }
+
+    $('#select2-basic1').on('change', function() {
+    var option = $("#select2-basic1 option:selected").text();
+
+    var GLOBAL_data = {};
+    var NA_data = {};
+    var EMEA_data = {};
+    var APAC_data = {};
+    var LATAM_data = {};
+    if (option =='CAUTION'){
+        $(".addHere").html('<div class="container4"><div class="avatar avatar bg-yellow-custom avatar-xl"><div class="avatar-content avatar-content-round">CAUTION</div></div></div>');
+
+        GLOBAL_data = {{'GLOBAL'|getTotalAndPercentage:'CAUTION' | safe}};
+        NA_data = {{'NA'|getTotalAndPercentage:'CAUTION' | safe}};
+        EMEA_data = {{'EMEA'|getTotalAndPercentage:'CAUTION' | safe}};
+        APAC_data = {{'APAC'|getTotalAndPercentage:'CAUTION' | safe}};
+        LATAM_data = {{'LATAM'|getTotalAndPercentage:'CAUTION' | safe}};
+    } else if (option =='STOP'){
+        $(".addHere").html('<div class="container4"><div class="avatar avatar bg-danger avatar-xl"><div class="avatar-content avatar-content-round">STOP</div></div></div>');
+
+        GLOBAL_data = {{'GLOBAL'|getTotalAndPercentage:'STOP' | safe}};
+        NA_data = {{'NA'|getTotalAndPercentage:'STOP' | safe}};
+        EMEA_data = {{'EMEA'|getTotalAndPercentage:'STOP' | safe}};
+        APAC_data = {{'APAC'|getTotalAndPercentage:'STOP' | safe}};
+        LATAM_data = {{'LATAM'|getTotalAndPercentage:'STOP' | safe}};
+    } else{
+        $(".addHere").html('<div class="container4"><div class="avatar avatar bg-success avatar-xl"><div class="avatar-content avatar-content-round">GO</div></div></div>');
+        GLOBAL_data = {{'GLOBAL'|getTotalAndPercentage:'GO' | safe}};
+        NA_data = {{'NA'|getTotalAndPercentage:'GO' | safe}};
+        EMEA_data = {{'EMEA'|getTotalAndPercentage:'GO' | safe}};
+        APAC_data = {{'APAC'|getTotalAndPercentage:'GO' | safe}};
+        LATAM_data = {{'LATAM'|getTotalAndPercentage:'GO' | safe}};
+    }
+
+    $('.GLOBAL_percentage_of_total').html(GLOBAL_data.percentage_of_total+"%");
+    $('.GLOBAL_grand_total').html(GLOBAL_data.grand_total);
+    $('.GLOBAL_total').html(GLOBAL_data.total);
+
+    $('.NA_percentage_of_total').html(NA_data.percentage_of_total+"%");
+    $('.NA_grand_total').html(NA_data.grand_total);
+    $('.NA_total').html(NA_data.total);
+
+    $('.EMEA_percentage_of_total').html(EMEA_data.percentage_of_total+"%");
+    $('.EMEA_grand_total').html(EMEA_data.grand_total);
+    $('.EMEA_total').html(EMEA_data.total);
+
+    $('.APAC_percentage_of_total').html(APAC_data.percentage_of_total+"%");
+    $('.APAC_grand_total').html(APAC_data.grand_total);
+    $('.APAC_total').html(APAC_data.total);
+
+    $('.LATAM_percentage_of_total').html(LATAM_data.percentage_of_total+"%");
+    $('.LATAM_grand_total').html(LATAM_data.grand_total);
+    $('.LATAM_total').html(LATAM_data.total);
+
+
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    $.ajax({
+        url: "/SKUHealthLandingPageExecutive/",
+        type: "post",
+        data: {'region':option, 'csrfmiddlewaretoken':csrftoken},
+        success: async function(response) 
+        {
+            for (const [key, value] of Object.entries(response.self_care_data)) {
+
+                if(value.Percentage > 0 && value.Percentage <= 65) {
+                    var $color = '#f70505';
+                }
+                else if(value.Percentage > 65 && value.Percentage <= 89){ 
+                    var $color = '#fff642';
+                } else if(value.Percentage > 89){ 
+                    var $color = '#28c76f';
+                }
+                selfCare["selfCare_"+value.Region].updateOptions({
+                    colors: [$color]
+                })
+                selfCare["selfCare_"+value.Region].updateSeries([(value.Percentage).toFixed(2)]);
+            }
+
+            for (const [key, value] of Object.entries(response.skin_health_data)) {
+                if(value.Percentage > 0 && value.Percentage <= 65) {
+                    var $color = '#f70505';
+                }
+                else if(value.Percentage > 65 && value.Percentage <= 89){ 
+                    var $color = '#fff642';
+                } else if(value.Percentage > 89){ 
+                    var $color = '#28c76f';
+                }
+                skinHealth["skinHealth_"+value.Region].updateOptions({
+                    colors: [$color]
+                })
+                skinHealth["skinHealth_"+value.Region].updateSeries([(value.Percentage).toFixed(2)]);
+            }
+
+            for (const [key, value] of Object.entries(response.essential_health_data)) {
+                if(value.Percentage > 0 && value.Percentage <= 65) {
+                    var $color = '#f70505';
+                }
+                else if(value.Percentage > 65 && value.Percentage <= 89){ 
+                    var $color = '#fff642';
+                } else if(value.Percentage > 89){ 
+                    var $color = '#28c76f';
+                }
+                essentialHelth["essentialHelth_"+value.Region].updateOptions({
+                    colors: [$color]
+                })
+                essentialHelth["essentialHelth_"+value.Region].updateSeries([(value.Percentage).toFixed(2)]);
+            }
+        }
+    }); 
+  })
+
+</script>
+    
+{% endblock %}
+
+{% block pagevendorscript %}
+
+{% endblock %}
+
+{% block pagescript %}
+<script src="{% static 'js/scripts/charts/chart-apex.js' %}"></script>
+<script src="{% static 'js/scripts/components/components-tooltips.min.js' %}"></script>
+<script src="{% static 'js/scripts/forms/form-select2.js' %}"></script>
+{% endblock %}

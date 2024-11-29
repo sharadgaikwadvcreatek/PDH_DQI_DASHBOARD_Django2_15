@@ -1,0 +1,378 @@
+/*================================================================================
+	Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+	Version: 2.0
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+/*================================================================================
+	Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+	Version: 2.0
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+html {
+	scroll-behavior: smooth;
+  }
+  
+  .help-block{
+	  color: red;
+  }
+  
+  .smaller-text{
+	  font-size: smaller !important;
+  }
+  
+  .bg-grey{
+	  background-color: #cecdcd !important;
+  }
+  /*
+  .ecommerce-application .list-view .ecommerce-card .card-content {
+	display : grid;
+	grid-template-columns : 0fr 3fr 1fr !important;
+  }*/
+  
+  .job_description{
+	  line-height:1.375;
+	  white-space:pre-wrap;
+  }
+  
+  .td-width-65{
+	  width: 65% !important;
+  }
+  
+  .td-width-33{
+	  width: 33% !important;
+  }
+  
+  .ecommerce-application .carta {
+	  -webkit-box-flex: 1;
+	  -webkit-flex-grow: 1;
+	  -ms-flex-positive: 1;
+	  flex-grow: 1;
+  }
+  
+  .ecommerce-application .list-view .ecommerce-card .card-content .item-name, .ecommerce-application .grid-view .ecommerce-card .card-content .item-description {
+	  overflow: hidden;
+	  white-space: nowrap;
+	  text-overflow: ellipsis;
+  }
+  
+  .education_addmorebutton{
+	  padding: 0;
+  }
+  
+  .education-remove{
+	  padding: 0;
+  }
+  
+  .experience_addmorebutton {
+	  padding: 0;
+  }
+  
+  .experience-remove{
+	  padding: 0;
+  }
+  
+  #upload_profile_picture{
+	  text-decoration:none;
+  }
+  #upload-profile{
+	  display:none
+  }
+  
+  .file-name{
+	  word-break: break-word;
+  }
+  
+  
+  .colorOrange{
+	  color:#ef8f00 !important;
+  }
+  
+  .text-black{
+	  color: black;
+  }
+  .pc15{
+	  padding-bottom: 1.5rem !important;
+  }
+  .marginright{
+	  margin-right: 10px;
+  }
+  .margin7{
+	  margin: 7px;
+  }
+  
+  .fr{
+	  float: right;
+	  margin: 4px;
+	  cursor: pointer;
+  }
+  
+  .cfr{
+	  float: right;
+	  margin: 4px;
+	  cursor: pointer;
+  }
+
+  .customlabel {
+	  color: #0e0e0e !important;
+	  font-size: 1.0rem !important;
+  }
+  
+  .avatar.avatar-xl.usecase img{
+	  width: 117px;
+	  height: 117px;
+  }
+  
+  .itemProblemDescription{
+	  overflow: hidden;
+	  white-space: nowrap;
+	  text-overflow: ellipsis;
+  }
+  .pos_rel{position:relative; float:left;}
+  .counter {
+	  background-color: rgba(0, 0, 0, 0.8);
+	  color: white;
+	  font-size: 15px;
+	  height: 20px;
+	  display:none;
+	  line-height: 12px;
+	  text-align:center;
+	  margin-top: -10px;
+	  min-width: 20px;
+	  padding: 2px;
+	  position: absolute;
+	  right: -36px;
+	  top: 50%;
+  }
+  
+  .pos_rel:hover .counter{display:block;}
+  
+	
+  .counter:before {
+	  border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+	  border-style: solid;
+	  border-width: 5px 5px 5px 0;
+	  content: "";
+	  display: block;
+	  height: 0;
+	  left: -10px;
+	  margin-top: -5px;
+	  position: relative;
+	  top: 50%;
+	  width: 0;
+  }
+  
+  .logoCustom{
+	  margin: 0rem 0 1rem 0 !important;
+  }
+  
+  .error{
+	  color: red;
+	  font-size: 0.857rem;
+  }
+  .timeline0 {
+	  margin-left: 0!important;
+  }
+  
+  .card{
+	  box-shadow: 0 4px 24px 0 rgb(34 41 47 / 21%)!important;
+  }
+  
+  
+  .nav-custon-link{
+	  padding: 0 !important
+  }
+  
+  .horizontal-layout.navbar-floating:not(.blank-page) .app-content {
+	  padding: calc(2rem + 1.45rem* 2 + 1.3rem) 2rem 0 2rem;
+  }
+  
+  .horizontal-layout.navbar-floating .header-navbar-shadow {
+	  top: 15px;
+  }
+  
+  .w100 {
+	  width: 100%;
+  }
+  .custumFooter{
+	  padding: 0;
+	  background: #7367f0 !important;
+  }
+  .dataTables_filter{
+	  float: right !important;
+  }
+  .dataTables_paginate {
+	  float: right !important;
+  }
+  
+  .apexcharts-menu-icon{
+	  display: none;
+  }
+
+
+  .float-left {
+	float : left !important;
+  }
+  
+  .float-right {
+	float : right !important;
+  }
+  
+  .float-none {
+	float : none !important;
+  }
+  
+  @media (min-width: 576px) {
+	.float-sm-left {
+	  float : left !important;
+	}
+	.float-sm-right {
+	  float : right !important;
+	}
+	.float-sm-none {
+	  float : none !important;
+	}
+  }
+  
+  @media (min-width: 768px) {
+	.float-md-left {
+	  float : left !important;
+	}
+	.float-md-right {
+	  float : right !important;
+	}
+	.float-md-none {
+	  float : none !important;
+	}
+  }
+  
+  @media (min-width: 992px) {
+	.float-lg-left {
+	  float : left !important;
+	}
+	.float-lg-right {
+	  float : right !important;
+	}
+	.float-lg-none {
+	  float : none !important;
+	}
+  }
+  
+  @media (min-width: 1200px) {
+	.float-xl-left {
+	  float : left !important;
+	}
+	.float-xl-right {
+	  float : right !important;
+	}
+	.float-xl-none {
+	  float : none !important;
+	}
+  }
+
+  .bwhite{
+	background: #fff;
+  }
+
+  .mr-1 {
+	margin-right: 15px !important;
+  }
+
+  .brand-text-1{
+	color: red !important;
+  }
+
+  .avatar .avatar-content-custom {
+    width: 60px !important;
+    height: 50px !important;
+    font-size: 1.3rem !important;
+  }
+
+  .avatar .avatar-content-custom-round{
+    width: 60px !important;
+    height: 50px !important;
+    font-size: 1.3rem !important;
+  }
+
+
+div.container4 {
+    position: relative 
+}
+
+div.container4 {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
+
+.bg-yellow-custom{
+	background-color: #fff642 !important;
+	color: #0e0e0e;
+}
+
+.bg-red-custom{
+	background-color: #f70505 !important;
+}
+
+.avatar.avatar-xl .avatar-content {
+    font-size: 1.0rem !important; 
+}
+
+.col-lg-22{
+	flex: 0 0 auto;
+	width: 20% !important;
+}
+
+.avatar.avatar-xl .avatar-content-1 {
+    height: 50px;
+    width: 50px;
+}
+
+/* .card-table {
+	word-break: break-all;
+  } */
+
+  .table-custom-padding > :not(caption) > * > * {
+    padding: 0.72rem 0.2rem;
+  }
+
+  .p0{
+	padding: 0.2rem !important;
+  }
+
+  .border-yellow-custom{
+	border: 1px solid #fff642 !important;
+  }
+
+  .text-yellow{
+	color: #fff642 !important;
+  }
+
+.knowledge-base-bg .card-body {
+    padding: 1rem;
+}
+
+.horizontal-menu .header-navbar.navbar-brand-center .navbar-header .navbar-brand .brand-text {
+	color: #0e0e0e;
+}
+
+.horizontal-menu .header-navbar.navbar-brand-center .navbar-header {
+    left: calc(41% - 56px) !important;
+}
+
+.dark-layout .brand-text {
+	color: #cecdcd !important;
+}

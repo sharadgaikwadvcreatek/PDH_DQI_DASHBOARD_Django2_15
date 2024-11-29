@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block vendorstyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/vendors.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/charts/apexcharts.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether-theme-arrows.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/forms/select/select2.min.css' %}">
+{% endblock %} {% block pagestyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/menu/menu-types/vertical-menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/colors/palette-gradient.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/charts/chart-apex.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/forms/pickers/form-flat-pickr.css' %}">
+{% endblock %} 
+{% block content %}
+<div class="content-body" id="dashboard-content">
+  {% csrf_token %}
+    <div class=" row match-height">
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Count of ERP Codes by First Sales Month & % Clean & Connected</h4>                              
+              </div> 
+                <div class="card-body p-0">
+                  <div id="historicalTrend" class="my-2"></div>
+                </div>
+              </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Fiction Books Sales</h4>
+                <div class="form-check form-switch">
+                  <input type="checkbox" class="form-check-input" id="customSwitch1" onchange="handleChange(event)">
+                  <label class="form-check-label" for="customSwitch1">Percentage</label>
+                </div>               
+              </div>                
+                <div class="card-body p-0">
+                  <div id="chart" class="my-2"></div>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class=" row match-height">
+        <div class="col-lg-12 col-md-6 col-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Count Breakdown of SKU Health for known Business Process Gaps (Based on Filtered Scope of SKU)</h4>                              
+              </div>
+                <div class="card-body p-0">
+                  <div id="chart1" class="my-2"></div>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class=" row match-height">
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">TOP Brands Based on % SKU Clean & Connected</h4>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Brand</th>
+                                <th colspan="2">Stop</th>
+                                <th colspan="2">Caution</th>
+                                <th colspan="2">GO</th>
+                            </tr>
+                            <tr>
+                              <th></th>
+                              <th>%</th>
+                              <th>Count</th>
+                              <th>%</th>
+                              <th>Count</th>
+                              <th>%</th>
+                              <th>Count</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for key, value in top_table_data.items %}
+                            <tr>
+                                <td>{{value.Brand}}</td>
+                                <td>{{value.Stop_Percentage|get_value_percentage}}</td>
+                                <td>{{value.Stop_Count|get_value}}</td>
+                                <td>{{value.Caution_Percentage|get_value_percentage}}</td>
+                                <td>{{value.Caution_Count|get_value}}</td>
+                                <td>{{value.Go_Percentage|get_value_percentage}}</td>
+                                <td>{{value.Go_Count|get_value}}</td>                                
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">BOTTOM Brands Based on % SKU Clean & Connected</h4>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Brand</th>
+                                <th colspan="2">Stop</th>
+                                <th colspan="2">Caution</th>
+                                <th colspan="2">GO</th>
+                            </tr>
+                            <tr>
+                              <th></th>
+                              <th>%</th>
+                              <th>Count</th>
+                              <th>%</th>
+                              <th>Count</th>
+                              <th>%</th>
+                              <th>Count</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for key, value in bottom_table_data.items %}
+                            <tr>
+                                <td>{{value.Brand}}</td>
+                                <td>{{value.Stop_Percentage|get_value_percentage}}</td>
+                                <td>{{value.Stop_Count|get_value}}</td>
+                                <td>{{value.Caution_Percentage|get_value_percentage}}</td>
+                                <td>{{value.Caution_Count|get_value}}</td>
+                                <td>{{value.Go_Percentage|get_value_percentage}}</td>
+                                <td>{{value.Go_Count|get_value}}</td>                                
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/ui/jquery.sticky.js' %}"></script>
+<script src="{% static 'vendors/js/forms/select/select2.full.min.js' %}"></script>
+<script src="{% static 'vendors/js/charts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+<script>
+      var options = {
+          series: [{
+          name: 'Count ERP Codes',
+          type: 'column',
+          data: {{ barChartData | safe }}
+        }, {
+          name: 'SKU Health "Go" %',
+          type: 'line',
+          data: {{ lineChartData | safe }}
+        }],
+          chart: {
+          height: 400,
+          type: 'line',
+          zoom: {
+            enabled: false
+          },
+        },
+        stroke: {
+          width: [0, 4]
+        },
+        title: {
+          text: ''
+        },
+        colors: [ // this array contains different color code for each data
+            "#ea5455",
+            "#28c76f",
+            "#fff642",            
+            "#A5978B",
+            "#2b908f",
+            "#f9a3a4",
+            "#90ee7e",
+            "#f48024",
+            "#69d2e7"
+        ],
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [1]
+        },
+        labels: {{ chartSeries | safe }},
+        xaxis: {
+          type: 'datetime'
+        },
+        yaxis: [{
+            max:1000,
+            title: {
+                text: 'Count ERP Codes',
+            },
+        
+        }, {
+          opposite: true,
+          title: {
+            text: 'SKU Health "GO"'
+          }
+        }]
+        };
+        var chart = new ApexCharts(document.querySelector("#historicalTrend"), options);
+        chart.render();
+
+        //=================================
+
+        var options = {
+          series: [{
+          name: 'GO',
+          data: {{ franchies_go_chart | safe }}
+        }, {
+          name: 'CAUTION',
+          data: {{ franchies_caution_chart | safe }}
+        }, {
+          name: 'STOP',
+          data: {{ franchies_stop_chart | safe }}
+        }],
+          chart: {
+          type: 'bar',
+          height: 400,
+          stacked: true,
+        },
+        colors: [ // this array contains different color code for each data
+            "#28c76f",
+            "#fff642",
+            "#ea5455",
+            "#A5978B",
+            "#2b908f",
+            "#f9a3a4",
+            "#90ee7e",
+            "#f48024",
+            "#69d2e7"
+        ], 
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            dataLabels: {
+              total: {
+                enabled: true,
+              }
+            }
+          },
+        },
+        stroke: {
+          width: 1,
+          colors: ['#fff']
+        },
+        title: {
+          text: ''
+        },
+        xaxis: {
+          categories: ['Essential Health','Self Care','Skin Health'],
+          labels: {
+            formatter: function (val) {
+              return val + ""
+            }
+          }
+        },
+        yaxis: {
+          title: {
+            text: undefined
+          },
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val + ""
+            }
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left',
+          offsetX: 40
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+
+        //---------------------------------
+
+        var options = {
+          series: [{
+          name: 'GO',
+          data: {{ franchies_go_chart1 | safe }}
+        }, {
+          name: 'CAUTION',
+          data: {{ franchies_caution_chart1 | safe }}
+        }, {
+          name: 'STOP',
+          data: {{ franchies_stop_chart1 | safe }}
+        }],
+          chart: {
+          type: 'bar',
+          height: 400,
+          stacked: true,
+        },
+        colors: [ // this array contains different color code for each data
+            "#28c76f",
+            "#fff642",
+            "#ea5455",
+            "#A5978B",
+            "#2b908f",
+            "#f9a3a4",
+            "#90ee7e",
+            "#f48024",
+            "#69d2e7"
+        ], 
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            dataLabels: {
+              total: {
+                enabled: true,
+              }
+            }
+          },
+        },
+        stroke: {
+          width: 1,
+          colors: ['#fff']
+        },
+        title: {
+          text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xaxis: {
+          categories: ['Essential Health','Self Care','Skin Health'],
+          labels: {
+            formatter: function (val) {
+              return val + ""
+            }
+          }
+        },
+        yaxis: {
+          title: {
+            text: undefined
+          },
+        },
+        tooltip: {
+          y: {
+            formatter: function (val) {
+              return val + ""
+            }
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left',
+          offsetX: 40
+        }
+        };
+
+        var chart1 = new ApexCharts(document.querySelector("#chart1"), options);
+        chart1.render();
+
+        function handleChange(e) {
+          const {checked} = e.target;
+          var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+          $.ajax({
+            url: "/productLevelRFTDashboard/",
+            type: "post",
+            data: {'flag':checked, 'csrfmiddlewaretoken':csrftoken},
+            success: async function(response) 
+            {
+              chart.updateOptions(
+                {
+                  series: [{
+                    name: 'GO',
+                    data: response.franchies_go_chart
+                  }, {
+                    name: 'CAUTION',
+                    data: response.franchies_caution_chart
+                  }, {
+                    name: 'STOP',
+                    data: response.franchies_stop_chart
+                  }]
+              });
+            }
+          });
+
+        }
+</script>
+{% endblock %}
+
+{% block pagevendorscript %}
+
+{% endblock %}
+
+{% block pagescript %}
+<script src="{% static 'js/scripts/charts/chart-apex.js' %}"></script>
+<script src="{% static 'js/scripts/components/components-tooltips.min.js' %}"></script>
+<script src="{% static 'js/scripts/forms/form-select2.js' %}"></script>
+{% endblock %}

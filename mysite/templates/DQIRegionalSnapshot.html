@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load user_tags %}
+{% block vendorstyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/vendors.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/charts/apexcharts.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether-theme-arrows.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/extensions/tether.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'vendors/css/forms/select/select2.min.css' %}">
+{% endblock %} {% block pagestyles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/menu/menu-types/vertical-menu.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/core/colors/palette-gradient.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/charts/chart-apex.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/forms/pickers/form-flat-pickr.css' %}">
+{% endblock %} 
+{% block content %}
+<div class="content-body" id="dashboard-content">
+    {% csrf_token %}
+    <div class=" row match-height">
+        <div class="col-lg-5 col-md-6 col-12">
+            <div class="row match-height">
+                <div class="col-lg-7 col-md-6 col-12 ">
+                    
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 mb-1">
+                    <select class="select2 form-select" id="select2-basic2">
+                        <option value="GLOBAL">GLOBAL</option>
+                          <option value="NA">NA</option>
+                          <option value="APAC">APAC</option>
+                          <option value="EMEA">EMEA</option>
+                          <option value="LATAM">LATAM</option>
+                      </select>
+                </div>
+            </div>
+            <div class="row match-height">
+                <div class="col-lg-3 col-md-6 col-12 ">
+                    <h5>NTS > $ 50K</h5>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <h5># of ERP Materials</h5>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <h5>% of Total</h5>
+                </div>
+            </div>
+            <div class="row match-height">
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div>
+                        <div class="avatar avatar bg-success avatar-xl fr">
+                            <div class="avatar-content avatar-content-round">
+                                GO
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <h2 class="text-center text-white go_grand_total">{{go_grand_total}}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card {% if go_percentage_of_total > 89 %} bg-success text-white {% elif go_percentage_of_total > 65 and go_percentage_of_total < 89  %} bg-yellow-custom {% elif go_percentage_of_total < 65 and go_percentage_of_total > 0  %}  bg-danger text-white {% endif %}">
+                        <div class="card-body">
+                            <h2 class="text-center text-white go_percentage_of_total">{{go_percentage_of_total}}%</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row match-height">
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div>
+                        <div class="avatar avatar bg-yellow-custom avatar-xl fr">
+                            <div class="avatar-content avatar-content-round">
+                                CAUTION
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <h2 class="text-center text-white caution_grand_total">{{caution_grand_total}}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <h2 class="text-center text-white caution_percentage_of_total">{{caution_percentage_of_total}}%</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row match-height">
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div>
+                        <div class="avatar avatar bg-danger avatar-xl fr">
+                            <div class="avatar-content avatar-content-round">
+                                STOP
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <h2 class="text-center text-white stop_grand_total">{{stop_grand_total}}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <h2 class="text-center text-white stop_percentage_of_total">{{stop_percentage_of_total}}%</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row match-height" id="table-bordered">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Franchise</th>
+                                        <th>Total Active Product Count</th>
+                                        <th>% of Total - 'Go'</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="appendHere">
+                                    {% for key, value in franchies_go_data.items %}
+                                        <tr>
+                                            <td>{{value.Franchise}}</td>
+                                            <td>{{value.Mat_Count}}</td>
+                                            <td class="{% if value.Percentage > 89 %} bg-success text-white {% elif value.Percentage > 65 and value.Percentage < 89  %} bg-yellow-custom {% elif value.Percentage < 65 and value.Percentage > 0  %}  bg-danger text-white {% endif %}">{{value.Percentage}}%</td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr >
+                                        <td>Grand Total</td>
+                                        <td>{{go_grand_total}}</td>
+                                        <td class="{% if go_percentage_of_total > 89 %} bg-success text-white {% elif go_percentage_of_total > 65 and go_percentage_of_total < 89  %} bg-yellow-custom {% elif go_percentage_of_total < 65 and go_percentage_of_total > 0  %}  bg-danger text-white {% endif %}">{{go_percentage_of_total}}%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 col-md-6 col-12">
+            <div class="card">
+                <div class="card-body p-0">
+                  <div id="historicalTrend" class="my-2"></div>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class=" row match-height">
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">TOP 20 AUTHOR NAME</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Function</th>
+                                    <th>% Passed</th>
+                                    <th>Total Count Tested</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in top_20_data.items %} 
+                                <tr>
+                                    <td>{{value.Name}}</td>
+                                    <td>{{value.Function}}</td>
+                                    <td>{{value.Passed | calculate_percentage}}%</td>
+                                    <td>{{value.Total_Count_Tested}}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow py-0" data-bs-toggle="dropdown">
+                                                <i data-feather="more-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">BOTTOM 20 AUTHOR NAME</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Function</th>
+                                    <th>% Passed</th>
+                                    <th>Total Count Tested</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in bottom_20_data.items %} 
+                                <tr>
+                                    <td>{{value.Name}}</td>
+                                    <td>{{value.Function}}</td>
+                                    <td>{{value.Passed | calculate_percentage}}%</td>
+                                    <td>{{value.Total_Count_Tested}}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow py-0" data-bs-toggle="dropdown">
+                                                <i data-feather="more-vertical"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'vendors/js/vendors.min.js' %}"></script>
+<script src="{% static 'vendors/js/ui/jquery.sticky.js' %}"></script>
+<script src="{% static 'vendors/js/forms/select/select2.full.min.js' %}"></script>
+<script src="{% static 'vendors/js/charts/apexcharts.min.js' %}"></script>
+<script src="{% static 'vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+<script>
+      var options = {
+          series: [{
+          name: 'Tot Doc Field Tested',
+          type: 'column',
+          data: {{ barChartData | safe }}
+        }, {
+          name: 'Accuracy %',
+          type: 'line',
+          data: {{ lineChartData | safe }}
+        }],
+          chart: {
+          height: 540,
+          type: 'line',
+          zoom: {
+            enabled: false
+          },
+        },
+        stroke: {
+          width: [0, 4]
+        },
+        title: {
+          text: 'Historical Trend of New Fields Tested and Percent Accurate for Core Product Tracebility'
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [1]
+        },
+        labels: {{ chartSeries | safe }},
+        xaxis: {
+          type: 'datetime'
+        },
+        yaxis: [{
+          title: {
+            text: 'Tot Doc Field Tested',
+          },
+        
+        }, {
+          opposite: true,
+          title: {
+            text: 'Accuracy %'
+          }
+        }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#historicalTrend"), options);
+        chart.render();
+
+        $('#select2-basic2').on('change', function() {
+            var option = $("#select2-basic2 option:selected").text();
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            $.ajax({
+                url: "/DQIRegionalSnapshot/",
+                type: "post",
+                data: {'region':option, 'csrfmiddlewaretoken':csrftoken},
+                success: function(response) 
+                {
+                    $('.go_grand_total').html(response.go_grand_total);
+                    $('.go_percentage_of_total').html(response.go_percentage_of_total+"%");
+                    $('.caution_grand_total').html(response.caution_grand_total);
+                    $('.caution_percentage_of_total').html(response.caution_percentage_of_total+"%");
+                    $('.stop_grand_total').html(response.stop_grand_total);
+                    $('.stop_percentage_of_total').html(response.stop_percentage_of_total+"%");
+                    html_text = '';
+                    for (const [key, value] of Object.entries(response.franchies_go_data)) {
+                        html_text = html_text + '<tr><td>'+value.Franchise+'</td><td>'+value.Mat_Count+'</td><td class="';
+                        if(value.Percentage > 89) 
+                        {
+                            html_text = html_text + ' bg-success text-white'
+                        } else if (value.Percentage > 65 && value.Percentage < 89) {
+                            html_text = html_text + ' bg-yellow-custom'
+                        } else if (value.Percentage < 65 && value.Percentage > 0){
+                            html_text = html_text + ' bg-danger text-white'
+                        }
+                        html_text = html_text + '">'+value.Percentage+'%</td></tr>';
+                    }
+                    
+                    html_text = html_text + '<tr ><td>Grand Total</td><td>'+response.go_grand_total+'</td><td class="';
+                        if(response.go_percentage_of_total > 89) 
+                        {
+                            html_text = html_text + ' bg-success text-white'
+                        } else if (response.go_percentage_of_total > 65 && response.go_percentage_of_total < 89) {
+                            html_text = html_text + ' bg-yellow-custom'
+                        } else if (response.go_percentage_of_total < 65 && response.go_percentage_of_total > 0){
+                            html_text = html_text + ' bg-danger text-white'
+                        }
+                        html_text = html_text + '">'+response.go_percentage_of_total+'%</td></tr>';
+
+                    $(".appendHere").html(html_text);
+                }
+            }); 
+        })
+
+  
+</script>
+{% endblock %}
+
+{% block pagevendorscript %}
+
+{% endblock %}
+
+{% block pagescript %}
+<script src="{% static 'js/scripts/charts/chart-apex.js' %}"></script>
+<script src="{% static 'js/scripts/components/components-tooltips.min.js' %}"></script>
+<script src="{% static 'js/scripts/forms/form-select2.js' %}"></script>
+{% endblock %}
